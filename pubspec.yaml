@@ -1,0 +1,31 @@
+name: taxiappuserimagecompare
+description: A new Flutter project.
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.5 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  image_picker: ^1.0.1
+  http: ^1.1.0
+  fluttertoast: ^8.2.2
+  logger: ^1.4.0
+#  google_ml_kit: ^0.16.1
+#  camera: ^0.10.5+2
+#  tflite_flutter: ^0.10.1
+#  image: ^4.0.17
+#  lottie: ^2.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter  
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
