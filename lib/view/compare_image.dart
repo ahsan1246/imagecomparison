@@ -1,11 +1,11 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:taxiappuserimagecompare/models/compare_image_model.dart';
 
-import 'api_service.dart';
-import 'custom_button.dart';
-import 'pick_image.dart';
+import '../components/custom_button.dart';
+import '../components/pick_image.dart';
+import '../services/api_service.dart';
 
 class CompareImage extends StatefulWidget {
   const CompareImage({super.key});
@@ -17,7 +17,7 @@ class CompareImage extends StatefulWidget {
 class _CompareImageState extends State<CompareImage> {
   bool isComparingImage = false;
   String? imagePathForCompare;
-  Map? imageTransferResult;
+  CompareImageModel? imageComparisonResult;
 
   Future compareImage() async {
     await pickImage().then((imagePath) {
@@ -40,21 +40,30 @@ class _CompareImageState extends State<CompareImage> {
       files: {'image': '$imagePathForCompare'},
     ).then((res) {
       setState(() => isComparingImage = false);
-      imageTransferResult = {'response': '$res'};
+      imageComparisonResult = CompareImageModel(result: '$res');
       if (res == null) return null;
-      showToast('${jsonDecode(res)['response']}');
+      final data = CompareImageModel.fromRawJson(res);
+      showToast('${data.result}');
       setState(() {
-        imageTransferResult = jsonDecode(res);
+        imageComparisonResult = data;
       });
     }).onError((error, stackTrace) {
       setState(() {
-        imageTransferResult = {'response': '$error'};
+        imageComparisonResult = CompareImageModel(result: '$error');
         isComparingImage = false;
       });
       debugPrint('Error => $error');
       logger.e('StackTrace => $stackTrace');
       showToast('$error');
     });
+  }
+
+  String get matchStatus {
+    if (double.parse(imageComparisonResult!.percentage!) > 80) {
+      return 'Matched';
+    } else {
+      return 'Not Matched';
+    }
   }
 
   @override
@@ -102,24 +111,31 @@ class _CompareImageState extends State<CompareImage> {
               ),
             ),
           ),
-          if (imageTransferResult != null)
-            Row(
+          if (imageComparisonResult != null)
+            Column(
               children: [
-                if (imageTransferResult!['response'] != null)
-                  Expanded(
-                    child: Text(
-                      '${imageTransferResult!['response']}',
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  ),
-                if (imageTransferResult!['percentage'] != null)
-                  Text(
-                    double.parse('${imageTransferResult!['percentage']}')
-                        .toStringAsFixed(2),
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: Colors.amber),
+                Text(
+                  '${imageComparisonResult!.result}',
+                  style: const TextStyle(fontSize: 20),
+                ),
+                if (imageComparisonResult?.percentage != null)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          matchStatus,
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      Text(
+                        '${imageComparisonResult!.percentage}%',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Colors.amber,
+                        ),
+                      ),
+                    ],
                   ),
               ],
             ),

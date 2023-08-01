@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'compare_image.dart';
-import 'upload_image.dart';
+import 'view/compare_image.dart';
+import 'view/upload_image.dart';
 
 void main() {
   runApp(const MyApp());

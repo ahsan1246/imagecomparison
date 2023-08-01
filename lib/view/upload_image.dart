@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'custom_button.dart';
-import 'pick_image.dart';
-import 'api_service.dart';
+import '../components/custom_button.dart';
+import '../components/pick_image.dart';
+import '../services/api_service.dart';
 
 class UploadImage extends StatefulWidget {
   const UploadImage({super.key});
